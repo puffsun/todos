@@ -28,10 +28,10 @@ var routes = Routes{
 		"todo_index", "GET", TODOS_PATH, TodosIndexHandler,
 	},
 	Route{
-		"todo_item_get", "GET", TODO_PATH, TodoItemGetHandler,
+		"todo_item_post", "POST", TODOS_PATH, TodosCreateHandler,
 	},
 	Route{
-		"todo_item_post", "POST", TODO_PATH, TodosPostHandler,
+		"todo_item_get", "GET", TODO_PATH, TodoItemGetHandler,
 	},
 	Route{
 		"todo_item_delete", "DELETE", TODO_PATH, TodosDeleteHandler,
