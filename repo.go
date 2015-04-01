@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 
 	// Imported a package solely for side-effects
 	_ "github.com/mattn/go-sqlite3"
@@ -11,7 +10,7 @@ import (
 var (
 	CREATE_TABLE     = "CREATE TABLE IF NOT EXISTS todos(id int, title text, completed bool)"
 	INSERT_TODO      = "INSERT INTO todos (title, completed) VALUES (?, ?)"
-	UPDATE_TODO      = "UPDATE todos SET title = ? where id = ?"
+	UPDATE_TODO      = "UPDATE todos SET title = ?, completed = ? where id = ?"
 	DELETE_TODO      = "DELETE FROM todos where id = ?"
 	SELECT_ALL_TODOS = "SELECT * FROM todos"
 	SELECT_TODO      = "SELECT title, completed FROM todos WHERE id = ?"
@@ -26,7 +25,10 @@ var (
 // function, they are executed before the actual program begins.
 // http://golang.org/ref/spec#Package_initialization
 func init() {
-	// initialize
+	// Create DB table if not exist
+	db = GetDBConn(db)
+	_, err := db.Exec(CREATE_TABLE)
+	checkErr(err)
 }
 
 func checkErr(err error) {
@@ -36,7 +38,6 @@ func checkErr(err error) {
 }
 
 func FindAllTodos() Todos {
-
 	db = GetDBConn(db)
 	defer db.Close()
 
@@ -60,10 +61,13 @@ func FindAllTodos() Todos {
 	return result
 }
 
-func RepoFindTodo(id int) Todo {
+func FindTodo(id int) Todo {
+	db = GetDBConn(db)
+	defer db.Close()
 	stmt, err := db.Prepare(SELECT_TODO)
 	checkErr(err)
 	defer stmt.Close()
+
 	var (
 		title     string
 		completed bool
@@ -75,7 +79,7 @@ func RepoFindTodo(id int) Todo {
 	return Todo{id, title, completed}
 }
 
-func RepoCreateTodo(t Todo) Todo {
+func CreateTodo(t Todo) Todo {
 	// No transaction at all
 	db := GetDBConn(db)
 	defer db.Close()
@@ -93,26 +97,28 @@ func RepoCreateTodo(t Todo) Todo {
 	return t
 }
 
-func RepoDestroyTodo(id int) error {
-	for i, t := range todos {
-		if t.Id == id {
-			todos = append(todos[:i], todos[i+1:]...)
-			return nil
-		}
-	}
-	return fmt.Errorf("Could not find Todo with id of %d to delete", id)
+func UpdateTodo(id int, todo Todo) {
+	db := GetDBConn(db)
+	defer db.Close()
+
+	stmt, err := db.Prepare(UPDATE_TODO)
+	checkErr(err)
+	defer stmt.Close()
+
+	res, err := stmt.Exec(todo.Title, todo.Completed, id)
+	checkErr(err)
+}
+
+func DestroyTodo(id int) {
+	db = GetDBConn(db)
+	defer db.Close()
+	_, err := db.Exec(DELETE_TODO, id)
+	checkErr(err)
 }
 
 func NewDB() *sql.DB {
 	db, err := sql.Open("sqlite3", "todos.sqlite3")
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = db.Exec(CREATE_TABLE)
-	if err != nil {
-		panic(err)
-	}
+	checkErr(err)
 
 	return db
 }
