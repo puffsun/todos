@@ -7,7 +7,9 @@ import (
 
 func main() {
 	http.HandleFunc("/markdown", GenerateMarkdown)
+	// Serve static files in public directory
 	http.Handle("/", http.FileServer(http.Dir("public")))
+
 	println("Go web server up and running...")
 	http.ListenAndServe(":9090", nil)
 }
