@@ -16,5 +16,5 @@ func main() {
 		negroni.NewLogger())
 	middleware.UseHandler(router)
 	// Server started
-	middleware.Run(":9090")
+	middleware.Run(":8000")
 }
