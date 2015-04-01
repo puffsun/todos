@@ -1,7 +1,12 @@
 package main
 
 import (
+	"database/sql"
+	"encoding/json"
+	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
+	// Imported a package solely for side-effects
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/russross/blackfriday"
 	"net/http"
 )
@@ -9,10 +14,24 @@ import (
 // Global variables
 var (
 	TODOS_PATH = "/api/todos"
+	todos      = Todos{
+		Todo{Id: "1", Title: "Write presentation", Completed: false},
+		Todo{Id: "2", Title: "Host meetup", Completed: false},
+	}
 )
+
+type Todo struct {
+	Id        string `json:"id"`
+	Title     string `json:"title"`
+	Completed bool   `json:"completed"`
+}
+
+type Todos []Todo
 
 func main() {
 
+	db := NewDB()
+	println(db)
 	// Router, from gorilla/mux
 	router := mux.NewRouter().StrictSlash(false)
 
@@ -31,11 +50,18 @@ func main() {
 
 	// Serve static files in public directory
 	//http.Handle("/", http.FileServer(http.Dir("public")))
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
+	//router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
+
+	middleware := negroni.New(negroni.NewRecovery(),
+		negroni.NewStatic(http.Dir("public")),
+		// Even more middleware
+		negroni.NewLogger())
+
+	middleware.UseHandler(router)
 
 	// Server started
-	println("Go web server up and running...")
-	http.ListenAndServe(":9090", router)
+	//http.ListenAndServe(":9090", router)
+	middleware.Run(":9090")
 }
 
 func GenerateMarkdown(rw http.ResponseWriter, r *http.Request) {
@@ -44,11 +70,12 @@ func GenerateMarkdown(rw http.ResponseWriter, r *http.Request) {
 }
 
 func TodosGetHandler(rw http.ResponseWriter, r *http.Request) {
-	println("Get request accepted.")
+	json.NewEncoder(rw).Encode(todos)
 }
 
 func TodosPostHandler(rw http.ResponseWriter, r *http.Request) {
 	println("Post request accepted.")
+
 }
 
 func TodosPutHandler(rw http.ResponseWriter, r *http.Request) {
@@ -61,4 +88,18 @@ func TodosDeleteHandler(rw http.ResponseWriter, r *http.Request) {
 
 func ApiHandler(rw http.ResponseWriter, r *http.Request) {
 	println("API request accepted.")
+}
+
+func NewDB() *sql.DB {
+	db, err := sql.Open("sqlite3", "todos.sqlite3")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = db.Exec("create table if not exists books(id int, content text, complete bool)")
+	if err != nil {
+		panic(err)
+	}
+
+	return db
 }
