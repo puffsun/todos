@@ -5,14 +5,6 @@ import (
 	"net/http"
 )
 
-// Global variables
-var (
-	todos = Todos{
-		Todo{Id: 1, Title: "Write presentation", Completed: false},
-		Todo{Id: 2, Title: "Host meetup", Completed: false},
-	}
-)
-
 func main() {
 	// Router, from gorilla/mux
 	router := NewRouter()
