@@ -9,33 +9,87 @@ import (
 )
 
 var (
-	CREATE_TABLE = "create table if not exists books(id int, content text, complete bool)"
+	CREATE_TABLE     = "CREATE TABLE IF NOT EXISTS todos(id int, title text, completed bool)"
+	INSERT_TODO      = "INSERT INTO todos (title, completed) VALUES (?, ?)"
+	UPDATE_TODO      = "UPDATE todos SET title = ? where id = ?"
+	DELETE_TODO      = "DELETE FROM todos where id = ?"
+	SELECT_ALL_TODOS = "SELECT * FROM todos"
+	SELECT_TODO      = "SELECT title, completed FROM todos WHERE id = ?"
+	MAX_ID           = "SELECT id FROM todos ORDER BY ID DESC LIMIT 1"
+	todos            Todos
+	db               *sql.DB
 )
 
-var currentId int
-
-var todos Todos
-
 // Give us some seed data
+// The function init() will be automatically executed when a
+// package is loaded, one go program could contains one or more init()
+// function, they are executed before the actual program begins.
+// http://golang.org/ref/spec#Package_initialization
 func init() {
-	RepoCreateTodo(Todo{Title: "Write presentation"})
-	RepoCreateTodo(Todo{Title: "Host meetup"})
+	// initialize
+}
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func FindAllTodos() Todos {
+
+	db = GetDBConn(db)
+	defer db.Close()
+
+	var result Todos
+	rows, err := db.Query(SELECT_ALL_TODOS)
+	checkErr(err)
+
+	for rows.Next() {
+		var (
+			id        int
+			title     string
+			completed bool
+			todo      Todo
+		)
+
+		err = rows.Scan(&id, &title, &completed)
+		checkErr(err)
+		todo = Todo{id, title, completed}
+		result = append(result, todo)
+	}
+	return result
 }
 
 func RepoFindTodo(id int) Todo {
-	for _, t := range todos {
-		if t.Id == id {
-			return t
-		}
-	}
+	stmt, err := db.Prepare(SELECT_TODO)
+	checkErr(err)
+	defer stmt.Close()
+	var (
+		title     string
+		completed bool
+	)
+
+	err = stmt.QueryRow(id).Scan(&title, &completed)
+	checkErr(err)
 	// return empty Todo if not found
-	return Todo{}
+	return Todo{id, title, completed}
 }
 
 func RepoCreateTodo(t Todo) Todo {
-	currentId += 1
-	t.Id = currentId
-	todos = append(todos, t)
+	// No transaction at all
+	db := GetDBConn(db)
+	defer db.Close()
+	stmt, err := db.Prepare(INSERT_TODO)
+	defer stmt.Close()
+	checkErr(err)
+
+	res, err := stmt.Exec(t.Title, t.Completed)
+	checkErr(err)
+
+	lastId, err := res.LastInsertId()
+	checkErr(err)
+	// Convert int64 to int, may lost precision
+	t.Id = int(lastId)
 	return t
 }
 
@@ -61,4 +115,12 @@ func NewDB() *sql.DB {
 	}
 
 	return db
+}
+
+func GetDBConn(db *sql.DB) *sql.DB {
+	if db == nil {
+		return NewDB()
+	} else {
+		return db
+	}
 }
