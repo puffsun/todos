@@ -8,33 +8,39 @@ import (
 	"net/http"
 )
 
-func GenerateMarkdown(rw http.ResponseWriter, r *http.Request) {
-	markdown := blackfriday.MarkdownCommon([]byte(r.FormValue("body")))
-	rw.Write(markdown)
+func GenerateMarkdown(resp http.ResponseWriter, req *http.Request) {
+	markdown := blackfriday.MarkdownCommon([]byte(req.FormValue("body")))
+	resp.Write(markdown)
 }
 
-func TodosIndexHandler(rw http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(rw).Encode(todos)
+func TodosIndexHandler(resp http.ResponseWriter, req *http.Request) {
+	// net/http server will always set accurate content-type and status code
+	// itself  but we set it explicitly here to make it clear.
+	resp.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	resp.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(resp).Encode(todos); err != nil {
+		panic(err)
+	}
 }
 
-func TodoItemGetHandler(rw http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+func TodoItemGetHandler(resp http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
 	todoId := vars["todoId"]
-	fmt.Fprintln(rw, "Todo item get handler: ", todoId)
+	fmt.Fprintln(resp, "Todo item get handler: ", todoId)
 }
 
-func TodosPostHandler(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(rw, "Post Handler")
+func TodosPostHandler(resp http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(resp, "Post Handler")
 }
 
-func TodosPutHandler(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(rw, "Put Handler")
+func TodosPutHandler(resp http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(resp, "Put Handler")
 }
 
-func TodosDeleteHandler(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(rw, "Delete Handler")
+func TodosDeleteHandler(resp http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(resp, "Delete Handler")
 }
 
-func ApiHandler(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(rw, "API Handler")
+func ApiHandler(resp http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(resp, "API Handler")
 }
