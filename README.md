@@ -1,6 +1,6 @@
 ### Todo app
 
-Impl in progress, to run the app, run `go get github.com/pilu/fresh`, then run `go get` && fresh
+Impl in progress, to run the app, run `go get github.com/pilu/fresh`, then run `go get && fresh`
 
 #### Resources:
 * [TodoMVC](http://todomvc.com/) AngularJS code
