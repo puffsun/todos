@@ -31,10 +31,12 @@ angular.module('todomvc')
                 var originalTodos = store.todos.slice(0);
 
                 var completeTodos = [];
+                var completeTodoIds = [];
                 var incompleteTodos = [];
                 store.todos.forEach(function (todo) {
                     if (todo.completed) {
                         completeTodos.push(todo);
+                        completeTodoIds.push(todo.id);
                     } else {
                         incompleteTodos.push(todo);
                     }
@@ -42,7 +44,7 @@ angular.module('todomvc')
 
                 angular.copy(incompleteTodos, store.todos);
 
-                return $http.delete('/api/todos')
+                return $http.delete('/api/todos/' + completeTodoIds.join())
                     .then(function success() {
                         return store.todos;
                     }, function error() {

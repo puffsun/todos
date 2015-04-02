@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	s "strings"
 )
 
 func GenerateMarkdown(resp http.ResponseWriter, req *http.Request) {
@@ -42,7 +43,7 @@ func TodoItemGetHandler(resp http.ResponseWriter, req *http.Request) {
 }
 
 func TodosCreateHandler(resp http.ResponseWriter, req *http.Request) {
-	todo := decodeRequestJson(resp, req)
+	todo := decodeTodoFromReq(resp, req)
 	t := CreateTodo(todo)
 	resp.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	resp.WriteHeader(http.StatusCreated)
@@ -53,11 +54,11 @@ func TodosCreateHandler(resp http.ResponseWriter, req *http.Request) {
 
 func TodosPutHandler(resp http.ResponseWriter, req *http.Request) {
 
-	todo := decodeRequestJson(resp, req)
+	todo := decodeTodoFromReq(resp, req)
 	UpdateTodo(todo)
 }
 
-func decodeRequestJson(resp http.ResponseWriter, req *http.Request) Todo {
+func decodeTodoFromReq(resp http.ResponseWriter, req *http.Request) Todo {
 	var todo Todo
 
 	// protect against malicious attacks on your server,
@@ -82,15 +83,22 @@ func decodeRequestJson(resp http.ResponseWriter, req *http.Request) Todo {
 	return todo
 }
 
-func TodosDeleteHandler(resp http.ResponseWriter, req *http.Request) {
+func TodoItemDeleteHandler(resp http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
-	todoId := vars["todoId"]
-	id, err := strconv.Atoi(todoId)
-	if err != nil {
-		panic(err)
-	}
+	todoId := vars["id"]
+	if s.Contains(todoId, ",") {
+		// We pass the data to backend directly, which is a securit hole!!!
+		// Do not do this in production
+		DestroyTodos(todoId)
 
-	DestroyTodo(id)
+	} else {
+		id, err := strconv.Atoi(todoId)
+		if err != nil {
+			panic(err)
+		}
+
+		DestroyTodoItem(id)
+	}
 }
 
 func ApiHandler(resp http.ResponseWriter, req *http.Request) {

@@ -15,7 +15,7 @@ type Routes []Route
 
 var (
 	TODOS_PATH = "/api/todos"
-	TODO_PATH  = "/api/todos/{todoId}"
+	TODO_PATH  = "/api/todos/{id}"
 )
 var routes = Routes{
 	Route{
@@ -34,7 +34,7 @@ var routes = Routes{
 		"todo_item_get", "GET", TODO_PATH, TodoItemGetHandler,
 	},
 	Route{
-		"todo_item_delete", "DELETE", TODO_PATH, TodosDeleteHandler,
+		"todo_item_delete", "DELETE", TODO_PATH, TodoItemDeleteHandler,
 	},
 	Route{
 		"todo_item_put", "PUT", TODO_PATH, TodosPutHandler,

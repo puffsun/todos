@@ -11,7 +11,8 @@ var (
 	CREATE_TABLE     = "CREATE TABLE IF NOT EXISTS todos(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, completed BOOL)"
 	INSERT_TODO      = "INSERT INTO todos (title, completed) VALUES (?, ?)"
 	UPDATE_TODO      = "UPDATE todos SET title = ?, completed = ? where id = ?"
-	DELETE_TODO      = "DELETE FROM todos where id = ?"
+	DELETE_TODO_ITEM = "DELETE FROM todos where id = ?"
+	DELETE_TODOs     = "DELETE FROM todos where id in ( ? )"
 	SELECT_ALL_TODOS = "SELECT * FROM todos"
 	SELECT_TODO      = "SELECT title, completed FROM todos WHERE id = ?"
 	MAX_ID           = "SELECT id FROM todos ORDER BY ID DESC LIMIT 1"
@@ -102,8 +103,13 @@ func UpdateTodo(todo Todo) {
 	checkErr(err)
 }
 
-func DestroyTodo(id int) {
-	_, err := db.Exec(DELETE_TODO, id)
+func DestroyTodoItem(id int) {
+	_, err := db.Exec(DELETE_TODO_ITEM, id)
+	checkErr(err)
+}
+
+func DestroyTodos(ids string) {
+	_, err := db.Exec(DELETE_TODOs, ids)
 	checkErr(err)
 }
 
