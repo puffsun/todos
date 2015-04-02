@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	CREATE_TABLE     = "CREATE TABLE IF NOT EXISTS todos(id int, title text, completed bool)"
+	CREATE_TABLE     = "CREATE TABLE IF NOT EXISTS todos(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, completed BOOL)"
 	INSERT_TODO      = "INSERT INTO todos (title, completed) VALUES (?, ?)"
 	UPDATE_TODO      = "UPDATE todos SET title = ?, completed = ? where id = ?"
 	DELETE_TODO      = "DELETE FROM todos where id = ?"
@@ -24,7 +24,11 @@ var (
 // function, they are executed before the actual program begins.
 // http://golang.org/ref/spec#Package_initialization
 func init() {
-	// Create DB table if not exist
+	// As this article says: http://go-database-sql.org/accessing.html
+	// the sql.DB object is designed to be long-lived. Don’t Open() and Close() databases frequently.
+	// Instead, create one sql.DB object for each distinct datastore you need to access,
+	// and keep it until the program is done accessing that datastore. Pass it around as needed,
+	// or make it available somehow globally, but keep it open.
 	db = GetDBConn(db)
 	_, err := db.Exec(CREATE_TABLE)
 	checkErr(err)
@@ -37,9 +41,6 @@ func checkErr(err error) {
 }
 
 func FindAllTodos() Todos {
-	db = GetDBConn(db)
-	defer db.Close()
-
 	var result Todos
 	rows, err := db.Query(SELECT_ALL_TODOS)
 	checkErr(err)
@@ -61,8 +62,6 @@ func FindAllTodos() Todos {
 }
 
 func FindTodo(id int) Todo {
-	db = GetDBConn(db)
-	defer db.Close()
 	stmt, err := db.Prepare(SELECT_TODO)
 	checkErr(err)
 	defer stmt.Close()
@@ -80,11 +79,9 @@ func FindTodo(id int) Todo {
 
 func CreateTodo(t Todo) Todo {
 	// No transaction at all
-	db := GetDBConn(db)
 	stmt, err := db.Prepare(INSERT_TODO)
-	checkErr(err)
 	defer stmt.Close()
-	defer db.Close()
+	checkErr(err)
 
 	res, err := stmt.Exec(t.Title, t.Completed)
 	checkErr(err)
@@ -97,9 +94,6 @@ func CreateTodo(t Todo) Todo {
 }
 
 func UpdateTodo(todo Todo) {
-	db := GetDBConn(db)
-	defer db.Close()
-
 	stmt, err := db.Prepare(UPDATE_TODO)
 	checkErr(err)
 	defer stmt.Close()
@@ -109,8 +103,6 @@ func UpdateTodo(todo Todo) {
 }
 
 func DestroyTodo(id int) {
-	db = GetDBConn(db)
-	defer db.Close()
 	_, err := db.Exec(DELETE_TODO, id)
 	checkErr(err)
 }
