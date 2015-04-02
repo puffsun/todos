@@ -2,12 +2,13 @@ package main
 
 import (
 	"github.com/codegangsta/negroni"
+	"github.com/puffsun/todos/app"
 	"net/http"
 )
 
 func main() {
 	// Router, from gorilla/mux
-	router := NewRouter()
+	router := app.NewRouter()
 
 	// Serve static files in public directory
 	middleware := negroni.New(negroni.NewRecovery(),
