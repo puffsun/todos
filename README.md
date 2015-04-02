@@ -10,7 +10,7 @@ To demonstrate how to develop Go web application along with Angularjs framework.
 * Run `fresh`, then happy coding with your favorite editor.
 * To make your life much happier as a front-end developer, you can install [LiveReload](http://livereload.com/), it costs you $9.99
 
-#### Anything else
+#### Anything else missed
 * Back-end code tests is missing, which is TOP priority for now!!
 * Currently there is a workaround for the feature `Clear Completed Todos`, the todo item will to be deleted once at a time, it should be a performance hit for large dataset.
 * Security hole. The parameters from front-end is passed to data CRUD without further processing. It’s ok for a demo project, but DO NOT DO THIS in production code.
