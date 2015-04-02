@@ -4,13 +4,13 @@
 To demonstrate how to develop Go web application along with Angularjs framework. In this demo, I extract Angularjs code from [TodoMVC](http://todomvc.com/), implement back-end code in [Go](www.golang.org).
 
 #### How to run this app
-* Run `go get github.com/pilu/fresh` to install the fresh commandline utility, with `fresh`, you don’t need to shutdown and restart the Go app under development. It will watch all of files in your project directory, restart Go app whenever you save source file, LIFE SAVER.
-* Run `go get` to install required libraries, you can file all of them in `Resource` section.
+* Run `go get github.com/pilu/fresh` to install the `fresh` commandline utility, with `fresh`, you don’t need to shutdown and restart the Go app under development. It watches all of files in your project directory, restart Go app whenever you save source file, LIFE SAVER.
+* Run `go get` to install required libraries, you can find all of them in below `Resource` section.
 * Run `fresh`, then happy coding with your favorite editor.
 * To make your life much happier as a front-end developer, you can install [LiveReload](http://livereload.com/), it costs you $9.99
 
 #### Anything else
-* Back-end code tests is missing, which is top priority for now!!
+* Back-end code tests is missing, which is TOP priority for now!!
 * Currently there is a workaround for the feature `Clear Completed Todos`, the todo item will to be deleted once at a time, it should be a performance hit for large dataset.
 * Security hole. The parameters from front-end is passed to data CRUD without further processing. It’s ok for a demo project, but DO NOT DO THIS in production code.
 * Dependency management. I haven’t find a good dependency management library/utility for now, [Glide](https://github.com/Masterminds/glide) is a good option, I’m trying it.
