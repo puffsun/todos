@@ -2,12 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/russross/blackfriday"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 func GenerateMarkdown(resp http.ResponseWriter, req *http.Request) {
@@ -20,6 +20,8 @@ func TodosIndexHandler(resp http.ResponseWriter, req *http.Request) {
 	// itself  but we set it explicitly here to make it clear.
 	resp.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	resp.WriteHeader(http.StatusOK)
+	todos := FindAllTodos()
+
 	if err := json.NewEncoder(resp).Encode(todos); err != nil {
 		panic(err)
 	}
@@ -28,7 +30,15 @@ func TodosIndexHandler(resp http.ResponseWriter, req *http.Request) {
 func TodoItemGetHandler(resp http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	todoId := vars["todoId"]
-	fmt.Fprintln(resp, "Todo item get handler: ", todoId)
+	id, err := strconv.Atoi(todoId)
+	if err != nil {
+		panic(err)
+	}
+	todo := FindTodo(id)
+
+	if err := json.NewEncoder(resp).Encode(todo); err != nil {
+		panic(err)
+	}
 }
 
 func TodosCreateHandler(resp http.ResponseWriter, req *http.Request) {
@@ -52,7 +62,7 @@ func TodosCreateHandler(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	t := RepoCreateTodo(todo)
+	t := CreateTodo(todo)
 	resp.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	resp.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(resp).Encode(t); err != nil {
@@ -61,13 +71,37 @@ func TodosCreateHandler(resp http.ResponseWriter, req *http.Request) {
 }
 
 func TodosPutHandler(resp http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(resp, "Put Handler")
+	vars := mux.Vars(req)
+	todoId := vars["todoId"]
+	title := vars["title"]
+	completedStr := vars["completed"]
+	id, err := strconv.Atoi(todoId)
+	if err != nil {
+		panic(err)
+	}
+
+	completed, err := strconv.ParseBool(completedStr)
+	if err != nil {
+		panic(err)
+	}
+
+	todo := FindTodo(id)
+	todo.Completed = completed
+	todo.Title = title
+	UpdateTodo(todo)
 }
 
 func TodosDeleteHandler(resp http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(resp, "Delete Handler")
+	vars := mux.Vars(req)
+	todoId := vars["todoId"]
+	id, err := strconv.Atoi(todoId)
+	if err != nil {
+		panic(err)
+	}
+
+	DestroyTodo(id)
 }
 
 func ApiHandler(resp http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(resp, "API Handler")
+	resp.WriteHeader(http.StatusOK)
 }

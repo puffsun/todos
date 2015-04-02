@@ -15,7 +15,6 @@ var (
 	SELECT_ALL_TODOS = "SELECT * FROM todos"
 	SELECT_TODO      = "SELECT title, completed FROM todos WHERE id = ?"
 	MAX_ID           = "SELECT id FROM todos ORDER BY ID DESC LIMIT 1"
-	todos            Todos
 	db               *sql.DB
 )
 
@@ -82,10 +81,10 @@ func FindTodo(id int) Todo {
 func CreateTodo(t Todo) Todo {
 	// No transaction at all
 	db := GetDBConn(db)
-	defer db.Close()
 	stmt, err := db.Prepare(INSERT_TODO)
-	defer stmt.Close()
 	checkErr(err)
+	defer stmt.Close()
+	defer db.Close()
 
 	res, err := stmt.Exec(t.Title, t.Completed)
 	checkErr(err)
@@ -97,7 +96,7 @@ func CreateTodo(t Todo) Todo {
 	return t
 }
 
-func UpdateTodo(id int, todo Todo) {
+func UpdateTodo(todo Todo) {
 	db := GetDBConn(db)
 	defer db.Close()
 
@@ -105,7 +104,7 @@ func UpdateTodo(id int, todo Todo) {
 	checkErr(err)
 	defer stmt.Close()
 
-	res, err := stmt.Exec(todo.Title, todo.Completed, id)
+	_, err = stmt.Exec(todo.Title, todo.Completed, todo.Id)
 	checkErr(err)
 }
 
