@@ -20,15 +20,17 @@ To demonstrate how to develop Go web application along with Angularjs framework.
 
 #### Resources:
 * [TodoMVC](http://todomvc.com/) It contains all kinds of front-end frameworks/libraries implementation of Todo application.
-* [negroni]("github.com/codegangsta/negroni") Go middleware library
-* [gorilla/mux]("github.com/gorilla/mux") Go routing library
-* [blackfriday]("github.com/russross/blackfriday") Generate html from Markdown
-* [go-sqlite3]("github.com/mattn/go-sqlite3") Go sqlite3 DB driver
-* [fresh](https://github.com/pilu/fresh) Auto loading go code
-* [Go by Example](http://gobyexample.com/)
+* [negroni]("github.com/codegangsta/negroni") Go middleware library.
+* [gorilla/mux]("github.com/gorilla/mux") Go routing library.
+* [blackfriday]("github.com/russross/blackfriday") Generate html from Markdown.
+* [go-sqlite3]("github.com/mattn/go-sqlite3") Go sqlite3 DB driver.
+* [fresh](https://github.com/pilu/fresh) Auto loading go code.
+* [Go by Example](http://gobyexample.com/) Your first go book.
 * [Make a RESTful JSON API in Go](http://thenewstack.io/make-a-restful-json-api-go/)
-* [Agouti](http://agouti.org/) A Golang acceptance testing framework
-* [GoConvey](http://goconvey.co/) Go testing framework, integrate with `go test` as well as testing Go code in browser
+* [Agouti](http://agouti.org/) A Golang acceptance testing framework.
+* [GoConvey](http://goconvey.co/) Go testing framework, integrate with `go test` as well as testing Go code in browser.
+* [Ginkgo](http://onsi.github.io/ginkgo/) Go BDD testing framework.
+* [Gomega](http://onsi.github.io/gomega/) Ginkgo’s prefered matcher library.
 
 #### Author
 [George Sun](http://codethoughts.info), anything you want to improve, please send me a pull request, thanks.
