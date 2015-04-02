@@ -1,7 +1,7 @@
 ### Todo app in Go and Angularjs
 
 #### Intention
-To demonstrate how to develop Go web application along with Angularjs framework. In this demo, I extract Angularjs code from [TodoMVC](http://todomvc.com/), implemented back-end code in [Go](www.golang.org).
+To demonstrate how to develop Go web application along with Angularjs framework. In this demo, I extract Angularjs code from [TodoMVC](http://todomvc.com/), implement back-end code in [Go](www.golang.org).
 
 #### How to run this app
 * Run `go get github.com/pilu/fresh` to install the fresh commandline utility, with `fresh`, you don’t need to shutdown and restart the Go app under development. It will watch all of files in your project directory, restart Go app whenever you save source file, LIFE SAVER.
