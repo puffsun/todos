@@ -13,7 +13,7 @@ To demonstrate how to develop Go web application along with Angularjs framework.
 * Back-end code tests is missing, which is top priority for now!!
 * Currently there is a workaround for the feature `Clear Completed Todos`, the todo item will to be deleted once at a time, it should be a performance hit for large dataset.
 * Security hole. The parameters from front-end is passed to data CRUD without further processing. It’s ok for a demo project, but DO NOT DO THIS in production code.
-* Dependency management. I haven’t find a good dependency management library/utility for now.
+* Dependency management. I haven’t find a good dependency management library/utility for now, [Glide](https://github.com/Masterminds/glide) is a good option, I’m trying it.
 * Currently this project is implemented with a bunch of Go web libraries, we can implemente it again with Go web frameworks, such as [Martini](http://martini.codegangsta.io/) or [Beego](http://beego.me/), you could find a better one for your requirement.
 
 #### Resources:
