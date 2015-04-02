@@ -24,3 +24,4 @@ To demonstrate how to develop Go web application along with Angularjs framework.
 * [go-sqlite3]("github.com/mattn/go-sqlite3") Go sqlite3 DB driver
 * [fresh](https://github.com/pilu/fresh) Auto loading go code
 * [Go by Example](http://gobyexample.com/)
+* [Make a RESTful JSON API in Go](http://thenewstack.io/make-a-restful-json-api-go/)
