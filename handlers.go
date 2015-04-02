@@ -42,7 +42,24 @@ func TodoItemGetHandler(resp http.ResponseWriter, req *http.Request) {
 }
 
 func TodosCreateHandler(resp http.ResponseWriter, req *http.Request) {
+	todo := decodeRequestJson(resp, req)
+	t := CreateTodo(todo)
+	resp.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	resp.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(resp).Encode(t); err != nil {
+		panic(err)
+	}
+}
+
+func TodosPutHandler(resp http.ResponseWriter, req *http.Request) {
+
+	todo := decodeRequestJson(resp, req)
+	UpdateTodo(todo)
+}
+
+func decodeRequestJson(resp http.ResponseWriter, req *http.Request) Todo {
 	var todo Todo
+
 	// protect against malicious attacks on your server,
 	// imagine some malicious user send us a 500GB JSON
 	body, err := ioutil.ReadAll(io.LimitReader(req.Body, 1048576))
@@ -62,33 +79,7 @@ func TodosCreateHandler(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	t := CreateTodo(todo)
-	resp.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	resp.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(resp).Encode(t); err != nil {
-		panic(err)
-	}
-}
-
-func TodosPutHandler(resp http.ResponseWriter, req *http.Request) {
-	vars := mux.Vars(req)
-	todoId := vars["todoId"]
-	title := vars["title"]
-	completedStr := vars["completed"]
-	id, err := strconv.Atoi(todoId)
-	if err != nil {
-		panic(err)
-	}
-
-	completed, err := strconv.ParseBool(completedStr)
-	if err != nil {
-		panic(err)
-	}
-
-	todo := FindTodo(id)
-	todo.Completed = completed
-	todo.Title = title
-	UpdateTodo(todo)
+	return todo
 }
 
 func TodosDeleteHandler(resp http.ResponseWriter, req *http.Request) {
