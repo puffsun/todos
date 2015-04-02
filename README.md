@@ -7,7 +7,7 @@ To demonstrate how to develop Go web application along with Angularjs framework.
 * Run `go get github.com/pilu/fresh` to install the `fresh` commandline utility, with `fresh`, you don’t need to shutdown and restart the Go app under development. It watches all of files in your project directory, restart Go app whenever you save source file, LIFE SAVER.
 * Run `go get` to install required libraries, you can find all of them in below `Resource` section.
 * [Install NodeJS](https://github.com/joyent/node/wiki/Installation), then run `cd public && npm install` to install AngularJS and two of it's third-party modules: `angular-route` and `angular-mock`.
-* Run `fresh`, then happy coding with your favorite editor.
+* Go back to project root directory by `cd -` then run `fresh`, then happy coding with your favorite editor.
 * To make your life much happier as a front-end developer, you can install [LiveReload](http://livereload.com/), it costs you $9.99
 
 #### Anything else missed
