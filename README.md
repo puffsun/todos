@@ -27,6 +27,8 @@ To demonstrate how to develop Go web application along with Angularjs framework.
 * [fresh](https://github.com/pilu/fresh) Auto loading go code
 * [Go by Example](http://gobyexample.com/)
 * [Make a RESTful JSON API in Go](http://thenewstack.io/make-a-restful-json-api-go/)
+* [Agouti](http://agouti.org/) A Golang acceptance testing framework
+* [GoConvey](http://goconvey.co/) Go testing framework, integrate with `go test` as well as testing Go code in browser
 
 #### Author
 [George Sun](http://codethoughts.info), anything you want to improve, please send me a pull request, thanks.
