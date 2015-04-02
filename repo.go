@@ -2,6 +2,8 @@ package main
 
 import (
 	"database/sql"
+	"strconv"
+	s "strings"
 
 	// Imported a package solely for side-effects
 	_ "github.com/mattn/go-sqlite3"
@@ -109,8 +111,17 @@ func DestroyTodoItem(id int) {
 }
 
 func DestroyTodos(ids string) {
-	_, err := db.Exec(DELETE_TODOs, ids)
-	checkErr(err)
+	// I don't know why this not work
+	//_, err := db.Exec(DELETE_TODOs, ids)
+
+	// Since above code with in clause not work
+	// Here I issue multiple delete query for more than one todo items
+	idsArr := s.Split(ids, ",")
+	for _, idStr := range idsArr {
+		id, err := strconv.Atoi(idStr)
+		checkErr(err)
+		DestroyTodoItem(id)
+	}
 }
 
 func NewDB() *sql.DB {
