@@ -2,11 +2,20 @@
 # and a workspace (GOPATH) configured at /go.
 FROM golang:latest
 
-# Copy the local package files to the container's workspace.
-ADD . /go/src/github.com/puffsun/todos
+MAINTAINER George Sun <http://codethoughts.info>
 
-# Install dependencies TODO
-RUN go get
+# For convenience, set an env variable with the path of the code
+ENV APP_DIR  $GOPATH/src/github.com/puffsun/todos
+
+# Copy the local package files to the container's workspace.
+ADD . $APP_DIR
+
+WORKDIR $GOPATH/src/github.com/puffsun/todos
+
+# Install dependencies
+RUN go get github.com/tools/godep
+RUN go get github.com/pilu/fresh
+RUN $GOPATH/bin/godep restore
 
 # Build the project inside the container.
 # (You may fetch or manage dependencies here,
@@ -14,7 +23,7 @@ RUN go get
 RUN go install github.com/puffsun/todos
 
 # Run the web application by default when the container starts.
-ENTRYPOINT /go/bin/todos
+ENTRYPOINT $GOPATH/bin/todos
 
 # Document that the service listens on port 8000.
 EXPOSE 8000
