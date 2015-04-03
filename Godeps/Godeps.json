@@ -1,0 +1,32 @@
+{
+	"ImportPath": "github.com/puffsun/todos",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "github.com/codegangsta/negroni",
+			"Comment": "v0.1-70-gc7477ad",
+			"Rev": "c7477ad8e330bef55bf1ebe300cf8aa67c492d1b"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "8096f47503459bcc74d1f4c487b7e6e42e5746b5"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-sqlite3",
+			"Rev": "e28cd440fabdd39b9520344bc26829f61db40ece"
+		},
+		{
+			"ImportPath": "github.com/russross/blackfriday",
+			"Comment": "v1.2-47-g2c0c546",
+			"Rev": "2c0c546774078ef20c0cf4869b69e7528c03b003"
+		},
+		{
+			"ImportPath": "github.com/shurcooL/sanitized_anchor_name",
+			"Rev": "8e87604bec3c645a4eeaee97dfec9f25811ff20d"
+		}
+	]
+}
